@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ApplicationName:
+    Type: String
+    Default: "Test"
+    Description: "Name of the application that the VPC structure will be set up for. It will be pre-fixed to the beginning of the each resources for identification"
+  CostCode:
+    Type: String
+    Default: ""
+    Description: "Identifier for billing purposes"
+Resources:
+  NewVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - key: Name   
+        Value:
+          Fn::Join: 
+          - Ref: ApplicationName
+          - "VPC"    
+  SubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: "ap-southeast-2a"
+      Tags:
+      - key: Name   
+        Value:
+          Fn::Join: 
+          - Ref: ApplicationName
+          - "_VPC_10.0.1.0/24_ap-southeast-2a"
+      - key: CostCode
+        Value: 
+          Ref: CostCode
+  SubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: "ap-southeast-2b"
+      Tags:
+      - key: Name   
+        Value:
+          Fn::Join: 
+          - Ref: ApplicationName
+          - "_VPC_10.0.2.0/24_ap-southeast-2b"
+      - key: CostCode
+        Value: 
+          Ref: CostCode
+  SubnetThree:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: "ap-southeast-2c"
+      Tags:
+      - key: Name   
+        Value:
+          Fn::Join: 
+          - Ref: ApplicationName
+          - "_VPC_10.0.3.0/24_ap-southeast-2c"
+      - key: CostCode
+        Value: 
+          Ref: CostCode
+
+
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ApplicationName:
+    Type: String
+    Default: Test
+    Description: >-
+      Name of the application that the VPC structure will be set up for. It will
+      be pre-fixed to the beginning of the each resources for identification
+  CostCode:
+    Type: String
+    Default: ''
+    Description: Identifier for billing purposes
+Resources:
+  NewVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - key: Name
+          Value:
+            'Fn::Join':
+              - Ref: ApplicationName
+              - VPC
+  SubnetOne:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: ap-southeast-2a
+      Tags:
+        - key: Name
+          Value:
+            'Fn::Join':
+              - Ref: ApplicationName
+              - _VPC_10.0.1.0/24_ap-southeast-2a
+        - key: CostCode
+          Value:
+            Ref: CostCode
+  SubnetTwo:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: ap-southeast-2b
+      Tags:
+        - key: Name
+          Value:
+            'Fn::Join':
+              - Ref: ApplicationName
+              - _VPC_10.0.2.0/24_ap-southeast-2b
+        - key: CostCode
+          Value:
+            Ref: CostCode
+  SubnetThree:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: ap-southeast-2c
+      Tags:
+        - key: Name
+          Value:
+            Fn::Join: "" [
+              Ref: ApplicationName,
+              "_VPC_10.0.3.0/24_ap-southeast-2c" ]
+        - key: CostCode
+          Value:
+            Ref: CostCode
