@@ -2,7 +2,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: "This is a simple vpc structure for an application for the Sydney region, with a single VPC and three subnets"
 Parameters:
-  ApplicationName:
+  AccountName:
     Type: String
     Default: "Test"
     Description: "Name of the application that the VPC structure will be set up for. It will be pre-fixed to the beginning of the each resources for identification"
@@ -18,11 +18,11 @@ Resources:
       Tags:
       - Key: Name
         Value:
-          Fn::Join:
+          'Fn::Join':
           - " "
-          - - Ref: ApplicationName
+          - - Ref: AccountName
             - VPC
-  SubnetOne:
+  SubnetMidTierOne:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -32,11 +32,11 @@ Resources:
       Tags:
       - Key: Name
         Value:
-          Fn::Join:
+          'Fn::Join':
           - " "
-          - - Ref: ApplicationName
-            - VPC 10.0.1.0/24 ap-southeast-2a
-  SubnetTwo:
+          - - Ref: AccountName
+            - AppTier 10.0.1.0/24 ap-southeast-2a
+  SubnetMidTierTwo:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -46,11 +46,11 @@ Resources:
       Tags:
       - Key: Name
         Value:
-          Fn::Join:
+          'Fn::Join':
           - " "
-          - - Ref: ApplicationName
-            - VPC 10.0.2.0/24 ap-southeast-2b
-  SubnetThree:
+          - - Ref: AccountName
+            - AppTier 10.0.2.0/24 ap-southeast-2b
+  SubnetMidTierThree:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId:
@@ -60,17 +60,59 @@ Resources:
       Tags:
       - Key: Name
         Value:
-          Fn::Join:
+          'Fn::Join':
           - " "
-          - - Ref: ApplicationName
-            - VPC 10.0.3.0/24 ap-southeast-2c
+          - - Ref: AccountName
+            - AppTier 10.0.3.0/24 ap-southeast-2c
+  SubnetBackendOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.4.0/24
+      AvailabilityZone: "ap-southeast-2a"
+      Tags:
+      - Key: Name
+        Value:
+          'Fn::Join':
+          - " "
+          - - Ref: AccountName
+            - BackendTier 10.0.4.0/24 ap-southeast-2a
+  SubnetBackendTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.5.0/24
+      AvailabilityZone: "ap-southeast-2b"
+      Tags:
+      - Key: Name
+        Value:
+          'Fn::Join':
+          - " "
+          - - Ref: AccountName
+            - BackendTier 10.0.5.0/24 ap-southeast-2b
+  SubnetBackendThree:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      CidrBlock: 10.0.6.0/24
+      AvailabilityZone: "ap-southeast-2c"
+      Tags:
+      - Key: Name
+        Value:
+          'Fn::Join':
+          - " "
+          - - Ref: AccountName
+            - BackendTier 10.0.6.0/24 ap-southeast-2c
   IAMRole:
     Type: "AWS::IAM::Role"
     Properties: 
       RoleName: 
-        Fn::Join:
-        - " "
-        - - Ref : ApplicationName
+        'Fn::Join':
+        - ""
+        - - Ref : AccountName
           - Ref : AWS::Region 
           - Role
       AssumeRolePolicyDocument: 
@@ -87,9 +129,9 @@ Resources:
       Policies: 
         - 
           PolicyName: 
-            Fn::Join:
-            - " "
-            - - Ref: ApplicationName
+            'Fn::Join':
+            - ""
+            - - Ref: AccountName
               - Policy
           PolicyDocument: 
             Version: "2012-10-17"
@@ -128,11 +170,11 @@ Resources:
       - IpProtocol: tcp
         FromPort: '80'
         ToPort: '80'
-        CidrIp: 0.0.0.0/0s
+        CidrIp: 0.0.0.0/0
       Tags:
       - Key: Name
         Value:
-          Fn::Join:
-          - " "
-          - - Ref: ApplicationName
+          'Fn::Join':
+          - ""
+          - - Ref: AccountName
             - SG
