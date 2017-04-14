@@ -1,5 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
+Description: "This is a simple vpc structure for an application for the Sydney region, with a single VPC and three subnets"
 Parameters:
   ApplicationName:
     Type: String
@@ -7,7 +8,7 @@ Parameters:
     Description: "Name of the application that the VPC structure will be set up for. It will be pre-fixed to the beginning of the each resources for identification"
   CostCode:
     Type: String
-    Default: ""
+    Default: "12345"
     Description: "Identifier for billing purposes"
 Resources:
   NewVPC:
@@ -63,4 +64,75 @@ Resources:
           - " "
           - - Ref: ApplicationName
             - VPC 10.0.3.0/24 ap-southeast-2c
-
+  IAMRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      RoleName: 
+        Fn::Join:
+        - " "
+        - - Ref : ApplicationName
+          - Ref : AWS::Region 
+          - Role
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies: 
+        - 
+          PolicyName: 
+            Fn::Join:
+            - " "
+            - - Ref: ApplicationName
+              - Policy
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  InstanceProfile: 
+    Type: "AWS::IAM::InstanceProfile"
+    Properties: 
+      Path: "/"
+      Roles: 
+        - 
+          Ref: "IAMRole"
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow http to client host
+      VpcId:
+        Ref: NewVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '8080'
+        ToPort: '8080'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0s
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Join:
+          - " "
+          - - Ref: ApplicationName
+            - SG
