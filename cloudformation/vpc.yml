@@ -178,3 +178,20 @@ Resources:
           - ""
           - - Ref: AccountName
             - SG
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+      - Key: Name
+        Value:
+          'Fn::Join':
+          - ""
+          - - Ref: AccountName
+            - IGW
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: NewVPC
+      InternetGatewayId:
+        Ref: InternetGateway
